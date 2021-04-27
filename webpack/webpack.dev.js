@@ -8,7 +8,7 @@ const config = merge(common, {
   devtool: 'inline-source-map',
   mode: 'development',
   devServer: {
-    // contentBase: path.join(__dirname, 'assets'),
+    contentBase: path.join(__dirname, 'assets'),
     publicPath: '/',
     compress: true,
     port: 8080,
