@@ -8,7 +8,7 @@ const config = {
       {
         test: /\.tsx?$/,
         use: 'ts-loader',
-        exlude: /node_modules/,
+        exclude: /node_modules/,
       },
     ],
   },
