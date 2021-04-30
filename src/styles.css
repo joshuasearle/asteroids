@@ -1,3 +1,9 @@
+:root {
+  --background-color: hsl(202, 100%, 7%);
+  --ship-color: hsl(0, 81%, 59%);
+  --bulet-color: hsl(275, 32%, 55%);
+}
+
 *,
 *::before,
 *::after {
@@ -14,9 +20,33 @@ body,
 }
 
 body {
-  background-color: black;
+  background-color: var(--background-color);
 }
 
 #ship {
-  fill: white;
+  fill: var(--ship-color);
+}
+
+.text {
+  position: absolute;
+  font-family: monospace;
+  color: white;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.title {
+  font-size: 3rem;
+}
+
+.bullet {
+  fill: var(--bulet-color);
+}
+
+.asteroid {
+  fill: none;
+  stroke: white;
+  stroke-width: 4px;
+  stroke-linejoin: round;
 }
