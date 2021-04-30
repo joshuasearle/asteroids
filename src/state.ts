@@ -14,7 +14,6 @@ class GameState {
 
   constructor() {
     this.resetState();
-    this.asteroids.push(new Asteroid(false));
   }
 
   resetState() {
