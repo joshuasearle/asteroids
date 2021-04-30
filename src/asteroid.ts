@@ -79,6 +79,7 @@ class Asteroid implements GameObject {
 
   remove(svg: any) {
     const asteroid = document.getElementById(this.getIdString());
+    if (!asteroid) return;
     svg.removeChild(asteroid);
   }
 
