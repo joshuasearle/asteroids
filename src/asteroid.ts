@@ -98,6 +98,10 @@ class Asteroid implements GameObject {
   getRadius() {
     return this.getWidthHeight() / 2;
   }
+
+  isSmall(): boolean {
+    return this.small;
+  }
 }
 
 export default Asteroid;

@@ -44,9 +44,10 @@ class GameState {
     this.deadBullets = this.bullets.filter((bullet) => !bullet.alive());
     this.bullets = this.bullets.filter((bullet) => bullet.alive());
     this.asteroids.forEach((asteroid) => asteroid.tick());
+    const bigAsteroidCount = this.asteroids.filter((a) => !a.isSmall()).length;
     if (
       this.tickCount % 240 === 0 &&
-      this.asteroids.length < constants.maxAsteroidCount
+      bigAsteroidCount < constants.maxAsteroidCount
     ) {
       this.asteroids.push(new Asteroid(false));
     }
