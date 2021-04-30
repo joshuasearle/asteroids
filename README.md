@@ -2,8 +2,6 @@
 
 - Play with it [here](https://joshuasearle.github.io/asteroids/)
 
----
-
 # Technologies
 
 - HTML
@@ -11,8 +9,6 @@
 - TypeScript
 - Webpack
 - gh-pages
-
----
 
 # TODO
 
