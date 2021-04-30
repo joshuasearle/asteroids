@@ -1,17 +1,29 @@
 // Need this statement to import styles into build files
 import './styles.css';
-import Ship from './ship';
 import constants from './constants';
+import GameState from './state';
 
 const svg = document.getElementById('svg');
+const state = new GameState();
+state.render(svg);
 
-const ship = new Ship();
-ship.tick();
-ship.render(svg);
-
-const gameLoop = setInterval(() => {
-  ship.tick();
-  ship.render(svg);
+setInterval(() => {
+  if (!state.getPaused()) state.tick();
+  state.render(svg);
 }, 1000 / constants.ticksPerSecond);
 
-window.addEventListener('keydown', ship.inputHandler);
+window.addEventListener('keydown', (event: KeyboardEvent) => {
+  if (event.key !== 'Escape') return;
+  state.togglePaused();
+});
+
+window.addEventListener('keydown', (event: KeyboardEvent) => {
+  if (event.key !== 'r') return;
+  state.resetState();
+  state.render(svg);
+});
+
+window.addEventListener('keydown', (event: KeyboardEvent) => {
+  if (state.getPaused()) return;
+  state.inputHandler(event);
+});
