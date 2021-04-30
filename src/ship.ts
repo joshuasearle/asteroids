@@ -6,6 +6,8 @@ import Vector, {
 } from './vector';
 import constants from './constants';
 import GameObject from './gameObject';
+import { handleRotation, handleVelocity } from './moveBehaviour';
+import Bullet from './bullet';
 
 class Ship implements GameObject {
   // Position relative to the screen size
@@ -26,39 +28,9 @@ class Ship implements GameObject {
     this.rpm = 0;
   }
 
-  // Need to bind this as method is being called from not in the class
-  inputHandler = (event: KeyboardEvent): void => {
-    if (event.key === 'ArrowUp') this.thrust();
-    else if (event.key === 'ArrowLeft') this.turnLeft();
-    else if (event.key === 'ArrowRight') this.turnRight();
-  };
-
   public tick() {
-    this.handleVelocity();
-    this.handleRotation();
-  }
-
-  handleVelocity() {
-    const scaledVelocity = scaleVector(
-      this.velocity,
-      1 / constants.ticksPerSecond
-    );
-    this.position = addVectors(this.position, scaledVelocity);
-    this.handlePositionWrap();
-  }
-
-  handleRotation() {
-    const revolutionsPerSecond = this.rpm / 60;
-    const revolutionsPerMs = revolutionsPerSecond / 60;
-    const degreesToMove = revolutionsPerMs * 360;
-    this.rotation = (this.rotation + degreesToMove) % 360;
-  }
-
-  handlePositionWrap() {
-    this.position.x = this.position.x % window.innerWidth;
-    this.position.y = this.position.y % window.innerHeight;
-    if (this.position.x < 0) this.position.x = window.innerWidth;
-    if (this.position.y < 0) this.position.y = window.innerHeight;
+    this.position = handleVelocity(this.position, this.velocity, true);
+    this.rotation = handleRotation(this.rotation, this.rpm);
   }
 
   public thrust() {
@@ -88,6 +60,11 @@ class Ship implements GameObject {
     } else if (this.rpm < -constants.maxShipRpm) {
       this.rpm = -constants.maxShipRpm;
     }
+  }
+
+  shoot(): Bullet {
+    const bullet = new Bullet(this.position, -this.rotation);
+    return bullet;
   }
 
   createElement(svg: any) {
