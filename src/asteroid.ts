@@ -13,6 +13,7 @@ class Asteroid implements GameObject {
   static nextAsteroidId: number = 0;
   private asteroidId: number;
   private small: boolean;
+  private dead: boolean;
 
   constructor(small: boolean, position: Vector = null) {
     this.small = small;
@@ -29,6 +30,7 @@ class Asteroid implements GameObject {
     this.rotation = 0;
     this.rpm = getRandomInt(constants.minAsteroidRpm, constants.maxAsteroidRpm);
     this.asteroidId = Asteroid.nextAsteroidId;
+    this.dead = false;
     Asteroid.nextAsteroidId += 1;
   }
 
@@ -102,6 +104,34 @@ class Asteroid implements GameObject {
 
   isSmall(): boolean {
     return this.small;
+  }
+
+  isAsteroid() {
+    return true;
+  }
+
+  isBullet() {
+    return false;
+  }
+
+  collided(object: GameObject) {
+    if (!object.isBullet()) return;
+    this.dead = true;
+  }
+
+  alive() {
+    return !this.dead;
+  }
+
+  static addAsteroid(gameTick: number, bigAsteroidCount: number): Asteroid[] {
+    if (gameTick % 240 === 0 && bigAsteroidCount < constants.maxAsteroidCount) {
+      return [new Asteroid(false)];
+    }
+    return [];
+  }
+
+  onDeadReturn(): GameObject[] {
+    return this.break();
   }
 }
 

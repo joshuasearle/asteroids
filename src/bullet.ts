@@ -8,11 +8,13 @@ class Bullet implements GameObject {
   private position: Vector;
   private velocity: Vector;
   private bulletId: number;
+  private hit: boolean;
   static nextBulletId: number = 0;
 
   constructor(position: Vector, angle: number) {
     this.position = position;
     this.velocity = fromMagAng(constants.bulletSpeed, angle);
+    this.hit = false;
     this.bulletId = Bullet.nextBulletId;
     Bullet.nextBulletId += 1;
   }
@@ -26,11 +28,18 @@ class Bullet implements GameObject {
   }
 
   alive() {
+    if (this.hit) return false;
     if (this.position.x > window.innerWidth) return false;
     if (this.position.y > window.innerHeight) return false;
     if (this.position.x < 0) return false;
     if (this.position.y < 0) return false;
     return true;
+  }
+
+  collided(object: GameObject) {
+    // If object is not asteroid, do nothing
+    if (!object.isAsteroid()) return;
+    this.hit = true;
   }
 
   remove(svg: any) {
@@ -58,12 +67,24 @@ class Bullet implements GameObject {
     bullet.setAttribute('transform', translateString);
   }
 
-  collidingWith(asteroid: Asteroid): boolean {
-    const asteroidRadius = asteroid.getRadius();
-    const asteroidCenter = asteroid.getPosition();
-    const differenceVector = subVectors(asteroidCenter, this.position);
-    const differenceMagnitude = differenceVector.magnitude();
-    return differenceMagnitude < asteroidRadius;
+  getRadius() {
+    return constants.bulletRadius;
+  }
+
+  getPosition() {
+    return this.position;
+  }
+
+  isAsteroid() {
+    return false;
+  }
+
+  isBullet() {
+    return true;
+  }
+
+  onDeadReturn(): GameObject[] {
+    return [];
   }
 }
 

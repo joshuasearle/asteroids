@@ -19,6 +19,7 @@ class Ship implements GameObject {
   private rotation: number;
   // Degrees the ship moves per second
   private rpm: number;
+  private dead: boolean;
 
   constructor() {
     this.position = new Vector(window.innerWidth / 2, window.innerHeight / 2);
@@ -26,11 +27,16 @@ class Ship implements GameObject {
     // Initially looking up
     this.rotation = 90;
     this.rpm = 0;
+    this.dead = false;
   }
 
   public tick() {
     this.position = handleVelocity(this.position, this.velocity, true);
     this.rotation = handleRotation(this.rotation, this.rpm);
+  }
+
+  alive() {
+    return !this.dead;
   }
 
   public thrust() {
@@ -88,6 +94,36 @@ class Ship implements GameObject {
     const transformString = translateString + ' ' + rotateString + ' ';
 
     ship.setAttribute('transform', transformString);
+  }
+
+  getPosition() {
+    return this.position;
+  }
+
+  getRadius() {
+    return 15;
+  }
+
+  isAsteroid() {
+    return false;
+  }
+
+  isBullet() {
+    return false;
+  }
+
+  collided(object: GameObject) {
+    return;
+  }
+
+  remove(svg: any) {
+    const ship = document.getElementById('ship');
+    if (!ship) return;
+    svg.removeChild(ship);
+  }
+
+  onDeadReturn(): GameObject[] {
+    return [];
   }
 }
 

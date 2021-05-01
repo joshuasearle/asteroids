@@ -2,15 +2,15 @@ import Bullet from './bullet';
 import Ship from './ship';
 import Asteroid from './asteroid';
 import constants from './constants';
+import GameObject from './gameObject';
+import collisionHandler from './collisionHandler';
 
 class GameState {
-  private ship: Ship;
   private paused: boolean;
-  private bullets: Bullet[];
-  private deadBullets: Bullet[];
-  private asteroids: Asteroid[];
-  private deadAsteroids: Asteroid[];
+  private gameObjects: GameObject[];
+  private deadObjects: GameObject[];
   private tickCount: number;
+  private ship: Ship;
 
   constructor() {
     this.resetState();
@@ -18,58 +18,50 @@ class GameState {
 
   resetState() {
     this.ship = new Ship();
+    this.deadObjects = this.gameObjects || [];
+    this.gameObjects = [this.ship];
     this.paused = true;
-    this.deadBullets = this.bullets || [];
-    this.bullets = [];
-    this.deadAsteroids = this.asteroids || [];
-    this.asteroids = [];
     this.tickCount = 0;
   }
 
   render(svg: any) {
-    this.ship.render(svg);
-    this.bullets.forEach((bullet) => bullet.render(svg));
-    this.deadBullets.forEach((bullet) => bullet.remove(svg));
-    this.asteroids.forEach((asteroid) => asteroid.render(svg));
-    this.deadAsteroids.forEach((asteroid) => asteroid.remove(svg));
-    this.deadBullets = [];
-    this.deadAsteroids = [];
+    this.gameObjects.forEach((o) => o.render(svg));
+    this.deadObjects.forEach((o) => o.remove(svg));
+    this.deadObjects = [];
     const message = document.getElementById('message');
     message.style.visibility = this.paused ? 'visible' : 'hidden';
   }
 
+  getDeadObjects() {
+    return this.gameObjects.filter((o) => !o.alive());
+  }
+
+  removeDeadObjects() {
+    this.deadObjects = this.gameObjects.filter((o) => !o.alive());
+    this.gameObjects = this.gameObjects.filter((o) => o.alive());
+  }
+
   tick() {
-    this.ship.tick();
-    this.bullets.forEach((bullet) => bullet.tick());
-    this.deadBullets = this.bullets.filter((bullet) => !bullet.alive());
-    this.bullets = this.bullets.filter((bullet) => bullet.alive());
-    this.asteroids.forEach((asteroid) => asteroid.tick());
-    const bigAsteroidCount = this.asteroids.filter((a) => !a.isSmall()).length;
-    if (
-      this.tickCount % 240 === 0 &&
-      bigAsteroidCount < constants.maxAsteroidCount
-    ) {
-      this.asteroids.push(new Asteroid(false));
-    }
+    this.removeDeadObjects();
+    this.gameObjects = this.deadObjects.reduce((objects, object) => {
+      return objects.concat(object.onDeadReturn());
+    }, this.gameObjects);
+    this.gameObjects.forEach((o) => o.tick());
+    const bigAsteroidCount = this.gameObjects
+      .filter((o) => o.isAsteroid())
+      .filter((o) => (o as Asteroid).isSmall()).length;
+    this.gameObjects = this.gameObjects.concat(
+      Asteroid.addAsteroid(this.tickCount, bigAsteroidCount)
+    );
     this.handleCollisions();
     this.tickCount += 1;
   }
 
   handleCollisions() {
-    for (let bullet of this.bullets) {
-      for (let asteroid of this.asteroids) {
-        if (!bullet.collidingWith(asteroid)) continue;
-        // Add children asteroids to asteroid list
-        const subAsteroids = asteroid.break();
-        this.asteroids = this.asteroids.concat(subAsteroids);
-        // Add dead asteroid to be derendered
-        this.deadAsteroids.push(asteroid);
-        // Remove dead asteroid from list of asteroids
-        this.asteroids = this.asteroids.filter((a) => a !== asteroid);
-        // Derender bullet
-        this.deadBullets.push(bullet);
-        // Remove bullet from list of bullets
-        this.bullets = this.bullets.filter((b) => b !== bullet);
+    const objects = this.gameObjects;
+    for (let i = 0; i < objects.length; i++) {
+      for (let j = i; j < objects.length; j++) {
+        collisionHandler(objects[i], objects[j]);
       }
     }
   }
@@ -91,7 +83,7 @@ class GameState {
       this.ship.turnRight();
     } else if (event.key === ' ') {
       const bullet: Bullet = this.ship.shoot();
-      this.bullets.push(bullet);
+      this.gameObjects.push(bullet);
     }
   }
 }
