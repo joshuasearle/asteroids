@@ -33,7 +33,7 @@ class GameState {
     const message = document.getElementById('message');
     message.style.visibility = this.paused || this.over ? 'visible' : 'hidden';
     message.textContent = this.paused
-      ? 'Press <esc> to continue'
+      ? 'Press <esc> to unpause'
       : 'Press <r> to restart';
   }
 
