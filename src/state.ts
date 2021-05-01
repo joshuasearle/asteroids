@@ -11,6 +11,7 @@ class GameState {
   private deadObjects: GameObject[];
   private tickCount: number;
   private ship: Ship;
+  private over: boolean;
 
   constructor() {
     this.resetState();
@@ -22,6 +23,7 @@ class GameState {
     this.gameObjects = [this.ship];
     this.paused = true;
     this.tickCount = 0;
+    this.over = false;
   }
 
   render(svg: any) {
@@ -29,7 +31,10 @@ class GameState {
     this.deadObjects.forEach((o) => o.remove(svg));
     this.deadObjects = [];
     const message = document.getElementById('message');
-    message.style.visibility = this.paused ? 'visible' : 'hidden';
+    message.style.visibility = this.paused || this.over ? 'visible' : 'hidden';
+    message.textContent = this.paused
+      ? 'Press <esc> to continue'
+      : 'Press <r> to restart';
   }
 
   getDeadObjects() {
@@ -42,6 +47,7 @@ class GameState {
   }
 
   tick() {
+    if (this.paused || this.over) return;
     this.removeDeadObjects();
     this.gameObjects = this.deadObjects.reduce((objects, object) => {
       return objects.concat(object.onDeadReturn());
@@ -54,6 +60,7 @@ class GameState {
       Asteroid.addAsteroid(this.tickCount, bigAsteroidCount)
     );
     this.handleCollisions();
+    if (!this.ship.alive()) this.over = true;
     this.tickCount += 1;
   }
 
@@ -66,15 +73,18 @@ class GameState {
     }
   }
 
-  getPaused() {
-    return this.paused;
-  }
-
   togglePaused() {
     this.paused = !this.paused;
   }
 
   inputHandler(event: KeyboardEvent) {
+    if (this.over) return;
+    if (event.key === 'Escape') {
+      this.paused = !this.paused;
+    }
+
+    if (this.paused) return;
+
     if (event.key === 'ArrowUp' || event.key === 'w') {
       this.ship.thrust();
     } else if (event.key === 'ArrowLeft' || event.key === 'a') {

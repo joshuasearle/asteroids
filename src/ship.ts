@@ -113,7 +113,8 @@ class Ship implements GameObject {
   }
 
   collided(object: GameObject) {
-    return;
+    if (!object.isAsteroid()) return;
+    this.dead = true;
   }
 
   remove(svg: any) {
