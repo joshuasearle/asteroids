@@ -1,9 +1,4 @@
-import Vector, {
-  addVectors,
-  scaleVector,
-  scaleToMagnitude,
-  fromMagAng,
-} from './vector';
+import Vector, { addVectors, scaleToMagnitude, fromMagAng } from './vector';
 import constants from './constants';
 import GameObject from './gameObject';
 import { handleRotation, handleVelocity } from './moveBehaviour';

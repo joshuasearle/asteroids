@@ -2,7 +2,6 @@ import Vector, { fromMagAng, subVectors } from './vector';
 import GameObject from './gameObject';
 import constants from './constants';
 import { handleVelocity } from './moveBehaviour';
-import Asteroid from './asteroid';
 
 class Bullet implements GameObject {
   private position: Vector;
