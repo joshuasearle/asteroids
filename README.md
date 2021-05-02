@@ -17,3 +17,4 @@
 - Add local storage high score
 - Follow mouse mode
 - Sensitivity changer
+- Incremental difficulty
