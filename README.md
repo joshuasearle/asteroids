@@ -12,7 +12,6 @@
 
 # TODO
 
-- Add point system
 - Add life system
 - Add special ability
 - Add local storage high score
