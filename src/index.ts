@@ -14,10 +14,16 @@ setInterval(() => {
 
 window.addEventListener('keydown', (event: KeyboardEvent) => {
   if (event.key !== 'r') return;
+  if (event.repeat) return;
   state.resetState();
   state.render(svg);
 });
 
 window.addEventListener('keydown', (event: KeyboardEvent) => {
-  state.inputHandler(event);
+  if (event.repeat) return;
+  state.keyDownHandler(event);
+});
+
+window.addEventListener('keyup', (event: KeyboardEvent) => {
+  state.keyUpHandler(event);
 });
