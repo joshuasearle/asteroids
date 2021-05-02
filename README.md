@@ -15,3 +15,5 @@
 - Add life system
 - Add special ability
 - Add local storage high score
+- Follow mouse mode
+- Sensitivity changer
