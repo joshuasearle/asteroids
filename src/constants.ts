@@ -2,9 +2,9 @@ import Vector from './vector';
 
 const constants = {
   ticksPerSecond: 60,
-  thrust: 60,
+  thrust: 10,
   maxVelocityMagnitude: 400,
-  shipTurn: 10,
+  shipTurn: 2,
   maxShipRpm: 40,
   bulletSpeed: 500,
   bulletRadius: 5,
