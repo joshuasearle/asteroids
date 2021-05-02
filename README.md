@@ -15,6 +15,5 @@
 - Add point system
 - Add life system
 - Add special ability
-- Prevent rapid fire
 - Add local storage high score
 - Fix big asteroid count bug

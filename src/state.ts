@@ -1,7 +1,6 @@
 import Bullet from './bullet';
 import Ship from './ship';
 import Asteroid from './asteroid';
-import constants from './constants';
 import GameObject from './gameObject';
 import collisionHandler from './collisionHandler';
 
@@ -12,6 +11,10 @@ class GameState {
   private tickCount: number;
   private ship: Ship;
   private over: boolean;
+  // true when the up arrow key is down
+  private upDown: boolean;
+  private leftDown: boolean;
+  private rightDown: boolean;
 
   constructor() {
     this.resetState();
@@ -24,6 +27,9 @@ class GameState {
     this.paused = true;
     this.tickCount = 0;
     this.over = false;
+    this.upDown = false;
+    this.leftDown = false;
+    this.rightDown = false;
   }
 
   render(svg: any) {
@@ -48,6 +54,7 @@ class GameState {
 
   tick() {
     if (this.paused || this.over) return;
+    this.handleDownKeys();
     this.removeDeadObjects();
     this.gameObjects = this.deadObjects.reduce((objects, object) => {
       return objects.concat(object.onDeadReturn());
@@ -77,7 +84,13 @@ class GameState {
     this.paused = !this.paused;
   }
 
-  inputHandler(event: KeyboardEvent) {
+  handleDownKeys() {
+    if (this.upDown) this.ship.thrust();
+    if (this.leftDown) this.ship.turnLeft();
+    if (this.rightDown) this.ship.turnRight();
+  }
+
+  keyDownHandler(event: KeyboardEvent) {
     if (this.over) return;
     if (event.key === 'Escape') {
       this.paused = !this.paused;
@@ -86,14 +99,27 @@ class GameState {
     if (this.paused) return;
 
     if (event.key === 'ArrowUp' || event.key === 'w') {
-      this.ship.thrust();
+      this.upDown = true;
     } else if (event.key === 'ArrowLeft' || event.key === 'a') {
-      this.ship.turnLeft();
+      this.leftDown = true;
     } else if (event.key === 'ArrowRight' || event.key === 'd') {
-      this.ship.turnRight();
+      this.rightDown = true;
     } else if (event.key === ' ') {
       const bullet: Bullet = this.ship.shoot();
       this.gameObjects.push(bullet);
+    }
+  }
+
+  keyUpHandler(event: KeyboardEvent) {
+    if (this.paused) return;
+    if (this.over) return;
+
+    if (event.key === 'ArrowUp' || event.key === 'w') {
+      this.upDown = false;
+    } else if (event.key === 'ArrowLeft' || event.key === 'a') {
+      this.leftDown = false;
+    } else if (event.key === 'ArrowRight' || event.key === 'd') {
+      this.rightDown = false;
     }
   }
 }
