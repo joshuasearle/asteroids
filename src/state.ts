@@ -39,11 +39,14 @@ class GameState {
     this.deadObjects.forEach((o) => o.remove(svg));
     this.deadObjects = [];
     const message = document.getElementById('message');
-    message.innerHTML = this.paused
-      ? 'Press &lt;esc&gt; to unpause'
-      : this.over
-      ? `You scored ${this.points} points<br />Press &lt;r&gt; to restart`
-      : `Points: ${this.points}`;
+    let messageText = `Points: ${this.points}`;
+    if (this.over) {
+      messageText = messageText.concat(`<br />Press &lt;r&gt; to restart`);
+    } else if (this.paused) {
+      messageText = messageText.concat(`<br />Press &lt;esc&gt; to unpause`);
+    }
+
+    message.innerHTML = messageText;
   }
 
   getDeadObjects() {
