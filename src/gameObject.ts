@@ -1,3 +1,4 @@
+import GameState from './state';
 import Vector from './vector';
 
 interface GameObject {
@@ -10,7 +11,7 @@ interface GameObject {
   isBullet(): boolean;
   alive(): boolean;
   remove(svg: any): void;
-  onDeadReturn(): GameObject[];
+  onDeadReturn(state: GameState): void;
 }
 
 export default GameObject;

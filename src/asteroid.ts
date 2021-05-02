@@ -4,6 +4,7 @@ import { getRandomInt } from './util';
 import constants from './constants';
 import { handleVelocity, handleRotation } from './moveBehaviour';
 import asteroidPoints from './asteroidPoints';
+import GameState from './state';
 
 class Asteroid implements GameObject {
   private position: Vector;
@@ -132,8 +133,12 @@ class Asteroid implements GameObject {
     return [];
   }
 
-  onDeadReturn(): GameObject[] {
-    return this.break();
+  onDeadReturn(state: GameState) {
+    const children = this.break();
+    children.forEach((child) => state.addAsteroid(child));
+    state.addPoints(
+      this.small ? constants.smallAsteroidPoints : constants.bigAsteroidPoints
+    );
   }
 }
 

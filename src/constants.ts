@@ -13,6 +13,8 @@ const constants = {
   minAsteroidRpm: -40,
   maxAsteroidRpm: 40,
   maxAsteroidCount: 5,
+  smallAsteroidPoints: 10,
+  bigAsteroidPoints: 25,
 };
 
 export default constants;

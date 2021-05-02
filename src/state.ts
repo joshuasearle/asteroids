@@ -15,6 +15,7 @@ class GameState {
   private upDown: boolean;
   private leftDown: boolean;
   private rightDown: boolean;
+  private points: number;
 
   constructor() {
     this.resetState();
@@ -30,6 +31,7 @@ class GameState {
     this.upDown = false;
     this.leftDown = false;
     this.rightDown = false;
+    this.points = 0;
   }
 
   render(svg: any) {
@@ -37,10 +39,11 @@ class GameState {
     this.deadObjects.forEach((o) => o.remove(svg));
     this.deadObjects = [];
     const message = document.getElementById('message');
-    message.style.visibility = this.paused || this.over ? 'visible' : 'hidden';
-    message.textContent = this.paused
-      ? 'Press <esc> to unpause'
-      : 'Press <r> to restart';
+    message.innerHTML = this.paused
+      ? 'Press &lt;esc&gt; to unpause'
+      : this.over
+      ? `You scored ${this.points} points<br />Press &lt;r&gt; to restart`
+      : `Points: ${this.points}`;
   }
 
   getDeadObjects() {
@@ -56,9 +59,9 @@ class GameState {
     if (this.paused || this.over) return;
     this.handleDownKeys();
     this.removeDeadObjects();
-    this.gameObjects = this.deadObjects.reduce((objects, object) => {
-      return objects.concat(object.onDeadReturn());
-    }, this.gameObjects);
+    this.deadObjects.forEach((o) => {
+      o.onDeadReturn(this);
+    });
     this.gameObjects.forEach((o) => o.tick());
     const bigAsteroidCount = this.gameObjects
       .filter((o) => o.isAsteroid())
@@ -121,6 +124,14 @@ class GameState {
     } else if (event.key === 'ArrowRight' || event.key === 'd') {
       this.rightDown = false;
     }
+  }
+
+  addAsteroid(asteroid: Asteroid) {
+    this.gameObjects.push(asteroid);
+  }
+
+  addPoints(points: number) {
+    this.points += points;
   }
 }
 
