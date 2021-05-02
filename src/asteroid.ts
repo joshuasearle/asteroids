@@ -124,6 +124,8 @@ class Asteroid implements GameObject {
   }
 
   static addAsteroid(gameTick: number, bigAsteroidCount: number): Asteroid[] {
+    console.log(bigAsteroidCount, constants.maxAsteroidCount);
+
     if (gameTick % 240 === 0 && bigAsteroidCount < constants.maxAsteroidCount) {
       return [new Asteroid(false)];
     }

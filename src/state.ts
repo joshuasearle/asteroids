@@ -62,7 +62,7 @@ class GameState {
     this.gameObjects.forEach((o) => o.tick());
     const bigAsteroidCount = this.gameObjects
       .filter((o) => o.isAsteroid())
-      .filter((o) => (o as Asteroid).isSmall()).length;
+      .filter((o) => !(o as Asteroid).isSmall()).length;
     this.gameObjects = this.gameObjects.concat(
       Asteroid.addAsteroid(this.tickCount, bigAsteroidCount)
     );

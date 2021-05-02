@@ -16,4 +16,3 @@
 - Add life system
 - Add special ability
 - Add local storage high score
-- Fix big asteroid count bug
