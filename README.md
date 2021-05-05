@@ -12,7 +12,6 @@
 
 # TODO
 
-- Add life system
 - Add special ability
 - Follow mouse mode
 - Sensitivity changer
