@@ -36,6 +36,20 @@ body {
   text-align: center;
 }
 
+.high-score {
+  position: absolute;
+  font-family: monospace;
+  color: white;
+  left: 0;
+  top: 100%;
+  transform: translateX(2rem) translateY(-4rem);
+  text-align: center;
+}
+
+.high-score h1 {
+  font-size: 2rem;
+}
+
 .title {
   font-size: 3rem;
 }
