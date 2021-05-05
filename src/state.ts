@@ -4,6 +4,7 @@ import Asteroid from './asteroid';
 import GameObject from './gameObject';
 import collisionHandler from './collisionHandler';
 import { getHighScore, setHighScore } from './localStorage';
+import renderLives from './lives';
 
 class GameState {
   private paused: boolean;
@@ -36,6 +37,7 @@ class GameState {
   }
 
   render(svg: any) {
+    renderLives(this.ship.getRemainingLives());
     this.gameObjects.forEach((o) => o.render(svg));
     this.deadObjects.forEach((o) => o.remove(svg));
     this.deadObjects = [];
