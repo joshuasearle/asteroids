@@ -15,4 +15,3 @@
 - Add special ability
 - Follow mouse mode
 - Sensitivity changer
-- Incremental difficulty
