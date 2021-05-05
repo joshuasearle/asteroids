@@ -15,17 +15,33 @@ class Ship implements GameObject {
   // Degrees the ship moves per second
   private rpm: number;
   private dead: boolean;
+  private remainingLives: number;
+  private invulnerableTicksRemaining: number;
 
   constructor() {
-    this.position = new Vector(window.innerWidth / 2, window.innerHeight / 2);
-    this.velocity = new Vector(0, 0);
-    // Initially looking up
-    this.rotation = 90;
-    this.rpm = 0;
+    this.reset();
+    this.remainingLives = 3;
     this.dead = false;
   }
 
+  reset() {
+    // Initially looking up
+    this.rotation = 90;
+    this.rpm = 0;
+    this.invulnerableTicksRemaining = 60;
+    this.center();
+  }
+
+  center() {
+    this.position = new Vector(window.innerWidth / 2, window.innerHeight / 2);
+    this.velocity = new Vector(0, 0);
+  }
+
   public tick() {
+    this.invulnerableTicksRemaining =
+      this.invulnerableTicksRemaining <= 0
+        ? 0
+        : this.invulnerableTicksRemaining - 1;
     this.position = handleVelocity(this.position, this.velocity, true);
     this.rotation = handleRotation(this.rotation, this.rpm);
   }
@@ -75,6 +91,10 @@ class Ship implements GameObject {
     ship.setAttribute('points', '0,0 0,30 50,15');
   }
 
+  getRemainingLives() {
+    return this.remainingLives;
+  }
+
   render(svg: any) {
     if (!document.getElementById('ship')) {
       this.createElement(svg);
@@ -108,8 +128,12 @@ class Ship implements GameObject {
   }
 
   collided(object: GameObject) {
+    if (this.invulnerableTicksRemaining !== 0) return;
     if (!object.isAsteroid()) return;
-    this.dead = true;
+    this.remainingLives -= 1;
+    this.dead = this.remainingLives < 0;
+    this.invulnerableTicksRemaining = 60;
+    if (this.remainingLives >= 0) this.center();
   }
 
   remove(svg: any) {
