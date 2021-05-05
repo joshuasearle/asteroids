@@ -124,8 +124,8 @@ class Asteroid implements GameObject {
     return !this.dead;
   }
 
-  static addAsteroid(gameTick: number, bigAsteroidCount: number): Asteroid[] {
-    if (gameTick % 240 === 0 && bigAsteroidCount < constants.maxAsteroidCount) {
+  static addAsteroid(frequency: number, gameTick: number): Asteroid[] {
+    if (gameTick % frequency === 0) {
       return [new Asteroid(false)];
     }
     return [];

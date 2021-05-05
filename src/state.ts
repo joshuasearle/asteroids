@@ -18,6 +18,7 @@ class GameState {
   private leftDown: boolean;
   private rightDown: boolean;
   private points: number;
+  private asteroidFrequency: number;
 
   constructor() {
     this.resetState();
@@ -34,6 +35,7 @@ class GameState {
     this.leftDown = false;
     this.rightDown = false;
     this.points = 0;
+    this.asteroidFrequency = 500;
   }
 
   render(svg: any) {
@@ -71,12 +73,14 @@ class GameState {
       o.onDeadReturn(this);
     });
     this.gameObjects.forEach((o) => o.tick());
-    const bigAsteroidCount = this.gameObjects
-      .filter((o) => o.isAsteroid())
-      .filter((o) => !(o as Asteroid).isSmall()).length;
     this.gameObjects = this.gameObjects.concat(
-      Asteroid.addAsteroid(this.tickCount, bigAsteroidCount)
+      Asteroid.addAsteroid(this.asteroidFrequency, this.tickCount)
     );
+    console.log(this.asteroidFrequency);
+
+    if (this.tickCount % 120 === 0) {
+      this.asteroidFrequency = Math.max(this.asteroidFrequency - 5, 60);
+    }
     this.handleCollisions();
     if (!this.ship.alive()) this.over = true;
     setHighScore(this.points);
