@@ -27,6 +27,16 @@ body {
   fill: var(--ship-color);
 }
 
+.ship {
+  fill: var(--ship-color);
+}
+
+.ship-life {
+  fill: none;
+  stroke: white;
+  stroke-width: 3px;
+}
+
 .text {
   position: absolute;
   font-family: monospace;
