@@ -3,6 +3,7 @@ import Ship from './ship';
 import Asteroid from './asteroid';
 import GameObject from './gameObject';
 import collisionHandler from './collisionHandler';
+import { getHighScore, setHighScore } from './localStorage';
 
 class GameState {
   private paused: boolean;
@@ -38,6 +39,8 @@ class GameState {
     this.gameObjects.forEach((o) => o.render(svg));
     this.deadObjects.forEach((o) => o.remove(svg));
     this.deadObjects = [];
+    const highScore = document.getElementById('high-score');
+    highScore.textContent = `High Score: ${getHighScore()}`;
     const message = document.getElementById('message');
     let messageText = `Points: ${this.points}`;
     if (this.over) {
@@ -74,6 +77,7 @@ class GameState {
     );
     this.handleCollisions();
     if (!this.ship.alive()) this.over = true;
+    setHighScore(this.points);
     this.tickCount += 1;
   }
 
